@@ -6,6 +6,7 @@ use Flamarkt\Core\Api\Controller\OrderIndexController;
 use Flamarkt\Core\Api\Controller\OrderShowController;
 use Flamarkt\Core\Api\Controller\OrderStoreController;
 use Flamarkt\Core\Api\Controller\OrderUpdateController;
+use Flamarkt\Core\Api\Serializer\BasicOrderSerializer;
 use Flamarkt\Core\Api\Serializer\OrderSerializer;
 use Flamarkt\Core\Order\Event\Saving;
 use Flamarkt\Core\Order\Order;
@@ -63,4 +64,7 @@ return [
 
     (new Extend\Filter(OrderFilterer::class))
         ->addFilter(Filter\OrderTag::class),
+
+    (new Extend\Notification())
+        ->type(Notification\OrderTaggedBlueprint::class, BasicOrderSerializer::class, ['email']),
 ];
