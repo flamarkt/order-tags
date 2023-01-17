@@ -54,6 +54,6 @@ class OrderTaggedBlueprint extends AbstractOrderUpdateBlueprint
             return resolve(Formatter::class)->render($this->tag->notify_message);
         }
 
-        return parent::getEmailSubject($translator);
+        return parent::getEmailMessage($translator);
     }
 }
