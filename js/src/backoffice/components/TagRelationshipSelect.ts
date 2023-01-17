@@ -8,11 +8,13 @@ export default class TagRelationshipSelect extends AbstractRelationshipSelect<Ta
     protected resultsCache = new Map<string, Tag[]>();
 
     search(query: string) {
-        if (!query) {
-            m.redraw();
+        // No need to reload again and again when refocusing the field, resulsts are unlikely to change anyway
+        if (this.resultsCache.has(query)) {
             return Promise.resolve();
         }
 
+        // Intentionally load for an empty query as well
+        // For all use cases where there are only <=5 tags there's no real need to filter
         return app.store
             .find<Tag[]>('flamarkt/order-tags', {
                 filter: {q: query},
@@ -25,7 +27,9 @@ export default class TagRelationshipSelect extends AbstractRelationshipSelect<Ta
     }
 
     results(query: string) {
-        if (!query) {
+        // Technically our results for empty query don't come from the suggestion API
+        // But we can conveniently reuse that attribute to make the dropdown disappear after selecting an option
+        if (!query && !this.shouldShowSuggestions) {
             return [];
         }
 
@@ -55,5 +59,24 @@ export default class TagRelationshipSelect extends AbstractRelationshipSelect<Ta
             iconName ? [icon(iconName), ' '] : null,
             query ? highlight(tag.name(), query) : tag.name(),
         ];
+    }
+
+    addModel(tag: Tag) {
+        if (this.attrs.hasOne) {
+            this.setValue([tag]);
+        } else {
+            // Remove any existing primary tag before adding an alternate one
+            const tags = this.normalizedValue().filter(existingTag => {
+                if (tag.isPrimary()) {
+                    return !existingTag.isPrimary();
+                }
+
+                return true;
+            });
+
+            tags.push(tag);
+
+            this.setValue(tags);
+        }
     }
 }

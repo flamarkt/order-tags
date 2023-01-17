@@ -4,6 +4,7 @@ namespace Flamarkt\OrderTags\Api\Controller;
 
 use Flamarkt\OrderTags\Api\Serializer\TagSerializer;
 use Flamarkt\OrderTags\TagFilterer;
+use Flamarkt\OrderTags\TagSearcher;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
@@ -25,6 +26,7 @@ class TagIndexController extends AbstractListController
 
     public function __construct(
         protected TagFilterer  $filterer,
+        protected TagSearcher  $searcher,
         protected UrlGenerator $url
     )
     {
@@ -41,7 +43,11 @@ class TagIndexController extends AbstractListController
         $include = $this->extractInclude($request);
 
         $criteria = new QueryCriteria($actor, $filters, $sort);
-        $results = $this->filterer->filter($criteria, $limit, $offset);
+        if (array_key_exists('q', $filters)) {
+            $results = $this->searcher->search($criteria, $limit, $offset);
+        } else {
+            $results = $this->filterer->filter($criteria, $limit, $offset);
+        }
 
         $document->addPaginationLinks(
             $this->url->to('api')->route('flamarkt.orderTags.index'),

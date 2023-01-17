@@ -62,6 +62,9 @@ return [
     (new Extend\Filter(TagFilterer::class))
         ->addFilter(Filter\VisibleCustomer::class),
 
+    (new Extend\SimpleFlarumSearch(TagSearcher::class))
+        ->setFullTextGambit(Filter\FulltextGambit::class),
+
     (new Extend\Filter(OrderFilterer::class))
         ->addFilter(Filter\OrderTag::class),
 
