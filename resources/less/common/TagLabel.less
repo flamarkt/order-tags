@@ -1,0 +1,18 @@
+.FlamarktOrderTagLabel {
+    --tag-bg: #efefef;
+
+    display: inline-block;
+    border-radius: @border-radius;
+    padding: 2px 6px;
+    font-size: 0.9em;
+    color: #333;
+
+    &.colored {
+        background-color: var(--tag-bg);
+        color: white;
+    }
+
+    & + .FlamarktOrderTagLabel {
+        margin-left: 4px;
+    }
+}

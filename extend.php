@@ -16,11 +16,13 @@ use Flarum\Extend;
 return [
     (new Extend\Frontend('backoffice'))
         ->js(__DIR__ . '/js/dist/backoffice.js')
+        ->css(__DIR__ . '/resources/less/backoffice.less')
         ->route('/order-tags', 'orderTags.index')
         ->route('/order-tags/{id:[0-9a-f-]+|new}', 'orderTags.show'),
 
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . '/js/dist/forum.js'),
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/resources/less/forum.less'),
 
     new Extend\Locales(__DIR__ . '/resources/locale'),
 
@@ -34,7 +36,9 @@ return [
     (new Extend\Model(Order::class))
         ->relationship('tags', function (Order $order) {
             return $order->belongsToMany(Tag::class, 'flamarkt_order_tag')
-                ->withTimestamps();
+                ->withTimestamps()
+                ->orderBy('is_primary', 'desc')
+                ->orderBy('name');
         }),
 
     (new Extend\ApiSerializer(OrderSerializer::class))

@@ -1,6 +1,7 @@
 import app from 'flamarkt/backoffice/backoffice/app';
 import AbstractRelationshipSelect from 'flamarkt/backoffice/common/components/AbstractRelationshipSelect';
 import highlight from 'flarum/common/helpers/highlight';
+import icon from 'flarum/common/helpers/icon';
 import Tag from '../../common/models/Tag';
 
 export default class TagRelationshipSelect extends AbstractRelationshipSelect<Tag> {
@@ -48,7 +49,10 @@ export default class TagRelationshipSelect extends AbstractRelationshipSelect<Ta
     }
 
     item(tag: Tag, query?: string) {
+        const iconName = tag.icon();
+
         return [
+            iconName ? [icon(iconName), ' '] : null,
             query ? highlight(tag.name(), query) : tag.name(),
         ];
     }
